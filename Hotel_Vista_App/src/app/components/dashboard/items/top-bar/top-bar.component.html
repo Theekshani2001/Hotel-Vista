@@ -1,0 +1,70 @@
+<div class="main-wrap">
+
+  <div class="business-name-outer">
+
+    <img style="width: 150px; height: 150px" src="./assets/images/vista.png" alt="logo">
+  </div>
+
+  <div class="ham-wrap" (click)="toggleSlider()">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+
+  <div class="menu-outer">
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>dialpad</mat-icon>
+        <span>Redial</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>voicemail</mat-icon>
+        <span>Check voice mail</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon>
+        <span>Disable alerts</span>
+      </button>
+    </mat-menu>
+
+  </div>
+</div>
+
+<div class="left-slider" *ngIf="sliderState" [@leftSlider]>
+
+
+  <ul class="nav-wrap">
+    <li>
+      <a href="/dashboard/employee-context">Employee Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/user-context">User Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/buffetTicket-context">Buffet Ticket Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/payroll-context">Payroll Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/room-context">Room Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/parking-context">Parking Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/reservation-context">Reservation Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/roomService-context">Room Service Management</a><br><br>
+    </li>
+    <li>
+      <a href="/dashboard/cleaning-context">Cleaning Service Management</a><br><br>
+    </li>
+  </ul>
+
+</div>
+

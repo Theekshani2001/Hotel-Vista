@@ -1,0 +1,39 @@
+<form [formGroup]="signupForm" (ngSubmit)="signUp()">
+
+
+  <div class="outer">
+    <h3>
+      Sign Up
+    </h3>
+    <hr>
+
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input formControlName="name" type="text" class="form-control" id="name" >
+    </div>
+    <div class="mb-3">
+      <label for="emailAddress" class="form-label">Email address</label>
+      <input formControlName="email" type="email" class="form-control" id="emailAddress" placeholder="name@example.com">
+    </div>
+    <div class="mb-3">
+      <label for="contact" class="form-label">Contact Number</label>
+      <input formControlName="phone"  type="tel" class="form-control" id="contact" >
+    </div>
+
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input formControlName="password" type="password" class="form-control" id="password" >
+    </div>
+    <div class="mb-3">
+      <input type="submit" class="btn btn-primary" value="signup" style="width: 100%">
+    </div>
+
+  </div>
+
+
+</form>
+
+
+
+

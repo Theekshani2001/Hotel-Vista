@@ -1,0 +1,36 @@
+<div class="main">
+
+  <div class="inner">
+    <div class="left-side wrap">
+      <h2>
+        Welcome to Hotel Management System
+      </h2>
+      <br>
+      <div class="image">
+        <img class="center"  align="center" src="./assets/images/vista.png" alt="Simply Easy Learning" width="600"
+             height="250">
+      </div>
+      <br>
+      <h3>
+        Vista Hotel Management System
+      </h3>
+
+      <div class="button-bar">
+        <button routerLink="/auth-context/login" routerLinkActive="active" >Login</button>
+        <button routerLink="/auth-context/signUp" routerLinkActive="active">Sign Up</button>
+
+      </div>
+    </div>
+
+    <div class="right-side wrap">
+      <div class="navigateContext">
+        <router-outlet></router-outlet>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+

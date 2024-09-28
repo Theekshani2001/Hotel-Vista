@@ -1,0 +1,166 @@
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Buffet Ticket Manager</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <button (click)="onOpenModal(null, 'add')">Add Buffet Ticket <span class="sr-only">(current)</span></button>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchBuffetTickets(key.value)" #key="ngModel" ngModel
+             name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search buffet tickets..." required>
+    </form>
+  </div>
+</nav>
+
+
+<div class="container" id="main-container">
+  <div class="row">
+    <div *ngFor="let buffetTicket of buffetTickets" class="col-md-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body row">
+          <div class="col-6">
+            <a href=""><img src="./assets/images/buffet.png" alt="" class="img-fluid rounded-circle w-60"></a>
+          </div>
+          <div class="col-6 card-title align-self-center mb-0">
+            <h5>{{buffetTicket?.userName}}</h5>
+            <p class="m-0">{{buffetTicket?.ticketType}}</p>
+          </div>
+        </div>
+        <ul style="background-color: #707070" class="list-group list-group-flush">
+
+          <li class="list-group-item"><i class="fa fa-calendar float-right"></i>Date : {{buffetTicket?.issueDate}}</li>
+          <li class="list-group-item"><i class="fa fa-money float-right"></i>Price : {{buffetTicket?.price}}</li>
+        </ul>
+        <div class="card-body">
+          <div class="float-right btn-group btn-group-sm">
+            <a (click)="onOpenModalEdit(buffetTicket, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+            <a (click)="onOpenModalEdit(buffetTicket, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addBuffetTicketModal" tabindex="-1" role="dialog" aria-labelledby="addBuffetTicketModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addBuffetTicketModalLabel">Add Buffet Ticket</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm" (ngSubmit)="onAddBuffetTicket(addForm)">
+          <div class="form-group">
+            <label for="userName">User Name</label>
+            <input type="text" ngModel name="userName" class="form-control" id="userName" placeholder="User Name" required>
+          </div>
+          <div class="form-group">
+            <label for="ticketType">Ticket Type</label>
+<!--            <input type="text" ngModel name="ticketType" class="form-control" id="ticketTypqe" placeholder="Ticket Type" required>-->
+            <select ngModel name="ticketType" class="form-control" id="ticketType" placeholder="Ticket Type" required>
+              <option value="Adult">Adult</option>
+              <option value="Child">Child</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="issueDate">Issue Date</label>
+            <input type="date" ngModel name="issueDate" class="form-control" id="issueDate" placeholder="Issue Date" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Ticket Price</label>
+            <input type="number" ngModel name="price" class="form-control" id="price" placeholder="Ticket Price" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="add-buffetTicket-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="updateBuffetTicketModal" tabindex="-1" role="dialog" aria-labelledby="buffetTicketEditModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateBuffetTicketModalLabel">Edit Buffet Ticket {{editBuffetTicket?.userName}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm">
+          <div class="form-group">
+            <label for="userName">User Name</label>
+            <input type="text" ngModel="{{editBuffetTicket?.userName}}" name="userName" class="form-control" id="editUserName" aria-describedby="emailHelp" placeholder="User Name">
+          </div>
+          <input type="hidden" ngModel="{{editBuffetTicket?.id}}" name="id" class="form-control" id="id" placeholder="Id">
+          <div class="form-group">
+            <label for="ticketType">Ticket Type</label>
+            <input type="text" ngModel="{{editBuffetTicket?.ticketType}}" name="ticketType" class="form-control" id="editTicketType" placeholder="Ticket Type">
+          </div>
+          <div class="form-group">
+            <label for="issueDate">Issue Date</label>
+            <input type="date" ngModel="{{editBuffetTicket?.issueDate}}" name="issueDate" class="form-control" id="editIssueDate" placeholder="Issue Date">
+          </div>
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" ngModel="{{editBuffetTicket?.price}}" name="price" class="form-control" id="editPrice"  placeholder="Price">
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+            <button (click)="onUpdateBuffetTicket(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteBuffetTicketModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Buffet Ticket</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete buffet ticket of {{deleteBuffetTicket?.userName}}?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeleteBuffetTicket(deleteBuffetTicketId)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Notification for no users -->
+<div *ngIf="buffetTickets?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO BUFFET TICKETS!</h4>
+    <p>No buffet tickets were found.</p>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+

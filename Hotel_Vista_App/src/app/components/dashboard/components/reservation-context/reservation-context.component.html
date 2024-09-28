@@ -1,0 +1,213 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Reservation Manager</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <button (click)="onOpenModal(null, 'add')">Add Reservation <span class="sr-only">(current)</span></button>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchReservation(key.value)" #key="ngModel" ngModel
+             name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search reservations..." required>
+    </form>
+  </div>
+</nav>
+
+
+<div class="container" id="main-container">
+  <div class="row">
+    <div *ngFor="let reservation of reservations" class="col-md-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body row">
+          <div class="col-6">
+            <a href=""><img src="./assets/images/reservation.png" alt="" class="img-fluid rounded-circle w-60"></a>
+          </div>
+          <div class="col-6 card-title align-self-center mb-0">
+            <h4>{{reservation?.userName}}</h4>
+            <p class="m-0">{{reservation?.roomType}}</p>
+            <p class="m-0">{{reservation?.reservationStatus}}</p>
+          </div>
+        </div>
+        <ul style="background-color: #707070" class="list-group list-group-flush">
+          <li class="list-group-item"><i class="fa fa-calendar float-right"></i>Check In Date : {{reservation?.checkInDate}}</li>
+          <li class="list-group-item"><i class="fa fa-calendar float-right"></i>Check Out Date: {{reservation?.checkOutDate}}</li>
+          <li class="list-group-item"><i class="fa fa-user float-right"></i>Number Of Adults : {{reservation?.numOfAdults}}</li>
+          <li class="list-group-item"><i class="fa fa-user float-right"></i>Number Of Children : {{reservation?.numOfChildren}}</li>
+          <li class="list-group-item"><i class="fa fa-money float-right"></i>Total Cost : {{reservation?.totalCost}}</li>
+        </ul>
+        <div class="card-body">
+          <div class="float-right btn-group btn-group-sm">
+            <a (click)="onOpenModalEdit(reservation, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+            <a (click)="onOpenModalEdit(reservation, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Reservation Modal -->
+  <div class="modal fade" id="addReservationModal" tabindex="-1" role="dialog" aria-labelledby="addReservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addReservationModalLabel">Add Reservation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #addForm="ngForm" (ngSubmit)="onAddReservation(addForm)">
+            <div class="form-group">
+              <label for="userName">User Name</label>
+              <input type="text" ngModel name="userName" class="form-control" id="userName" placeholder="User Name" required>
+            </div>
+            <div class="form-group">
+              <label for="roomType">Room Type</label>
+              <select ngModel name="roomType" class="form-control" id="roomType" placeholder="Room Type" (change)="calculateTotalCost(addForm)" required>
+                <option value="Single Room">Single Room</option>
+                <option value="Double Room">Double Room</option>
+                <option value="Suite Room">Suite Room</option>
+                <option value="Family Room">Family Room</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reservationStatus">Reservation Status</label>
+              <select ngModel name="reservationStatus" class="form-control" id="reservationStatus" placeholder="Reservation Status" required>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="numOfAdults">Number Of Adults</label>
+              <input type="number" ngModel name="numOfAdults" class="form-control" id="numOfAdults" placeholder="Number Of Adults" required>
+            </div>
+            <div class="form-group">
+              <label for="numOfChildren">Number Of Children</label>
+              <input type="number" ngModel name="numOfChildren" class="form-control" id="numOfChildren" placeholder="Number Of Children" required>
+            </div>
+            <div class="form-group">
+              <label for="checkInDate">Check In Date</label>
+              <input type="Date" ngModel name="checkInDate" class="form-control" id="checkInDate" placeholder="Check In Date" (change)="calculateTotalCost(addForm)" required>
+            </div>
+            <div class="form-group">
+              <label for="checkOutDate">Check Out Date</label>
+              <input type="Date" ngModel name="checkOutDate" class="form-control" id="checkOutDate" placeholder="Check Out Date" (change)="calculateTotalCost(addForm)" required>
+            </div>
+            <div class="form-group">
+              <label for="totalCost">Total Cost</label>
+              <input type="number" ngModel="{{totalCost}}" name="totalCost" class="form-control" id="totalCost" placeholder="Total Cost" [value]="totalCost" readonly >
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" id="add-reservation-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="updateReservationModal" tabindex="-1" role="dialog" aria-labelledby="reservationEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="updateReservationModalLabel">Edit Reservation of {{editReservation?.userName}}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm">
+            <div class="form-group">
+              <label for="userName">User Name</label>
+              <input type="text" ngModel="{{editReservation?.userName}}" name="userName" class="form-control" id="editUserName" aria-describedby="emailHelp" placeholder="User Name">
+            </div>
+            <input type="hidden" ngModel="{{editReservation?.id}}" name="id" class="form-control" id="id" placeholder="Id">
+
+            <div class="form-group">
+              <label for="roomType">Room Type</label>
+              <select ngModel="{{editReservation?.roomType}}" name="roomType" class="form-control" id="_roomType" placeholder="Room Type" (change)="calculateTotalCost(editForm.value)" required>
+                <option value="Single Room">Single Room</option>
+                <option value="Double Room">Double Room</option>
+                <option value="Suite Room">Suite Room</option>
+                <option value="Family Room">Family Room</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reservationStatus">Reservation Status</label>
+              <select ngModel="{{editReservation?.reservationStatus}}" name="reservationStatus" class="form-control" id="_reservationStatus" placeholder="Reservation Status" required>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="numOfAdults">Number Of Adults</label>
+              <input type="number" ngModel="{{editReservation?.numOfAdults}}" name="numOfAdults" class="form-control" id="_numOfAdults" placeholder="Number Of Adults" required>
+            </div>
+            <div class="form-group">
+              <label for="numOfChildren">Number Of Children</label>
+              <input type="number" ngModel="{{editReservation?.numOfChildren}}" name="numOfChildren" class="form-control" id="_numOfChildren" placeholder="Number Of Children" required>
+            </div>
+            <div class="form-group">
+              <label for="checkInDate">Check In Date</label>
+              <input type="Date" ngModel="{{editReservation?.checkInDate}}" name="checkInDate" class="form-control" id="_checkInDate" placeholder="Check In Date" (change)="calculateTotalCost(editForm.value)" required>
+            </div>
+            <div class="form-group">
+              <label for="checkOutDate">Check Out Date</label>
+              <input type="Date" ngModel="{{editReservation?.checkOutDate}}" name="checkOutDate" class="form-control" id="_checkOutDate" placeholder="Check Out Date" (change)="calculateTotalCost(editForm.value)" required>
+            </div>
+            <div class="form-group">
+              <label for="totalCost">Total Cost</label>
+              <input type="number" ngModel="{{editReservation?.totalCost}}" name="totalCost" class="form-control" id="_totalCost" placeholder="Total Cost" required readonly>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+              <button (click)="onUpdateReservation(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteReservationModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModelLabel">Delete Reservation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete reservation of {{deleteReservation?.userName}}?</p>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button (click)="onDeleteReservation(deleteReservationId)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification for no users -->
+<div *ngIf="reservations?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO RESERVATIONS!</h4>
+    <p>No reservations were found.</p>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+

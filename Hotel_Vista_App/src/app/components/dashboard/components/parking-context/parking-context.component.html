@@ -1,0 +1,157 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Parking Manager</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <button (click)="onOpenModal(null, 'add')">Add Parking <span class="sr-only">(current)</span></button>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchParking(key.value)" #key="ngModel" ngModel
+             name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search parking..." required>
+    </form>
+  </div>
+</nav>
+
+
+<div class="container" id="main-container">
+  <div class="row">
+    <div *ngFor="let parking of allParking" class="col-md-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body row">
+          <div class="col-6">
+            <a href=""><img src="./assets/images/parking.png" alt="" class="img-fluid rounded-circle w-60"></a>
+          </div>
+          <div class="col-6 card-title align-self-center mb-0">
+            <h4>{{parking?.userName}}</h4>
+          </div>
+        </div>
+        <ul style="background-color: #707070" class="list-group list-group-flush">
+          <li class="list-group-item"><i class="fa fa-user float-right"></i>Vehicle Number : {{parking?.vehicleNumber}}</li>
+          <li class="list-group-item"><i class="fa fa-calendar float-right"></i>Parking Start Time: {{parking?.parkingStartTime}}</li>
+          <li class="list-group-item"><i class="fa fa-sort-numeric-desc float-right"></i>Parking End Time : {{parking?.parkingEndTime}}</li>
+        </ul>
+        <div class="card-body">
+          <div class="float-right btn-group btn-group-sm">
+            <a (click)="onOpenModalEdit(parking, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+            <a (click)="onOpenModalEdit(parking, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Parking Modal -->
+  <div class="modal fade" id="addParkingModal" tabindex="-1" role="dialog" aria-labelledby="addParkingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addParkingModalLabel">Add Parking</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #addForm="ngForm" (ngSubmit)="onAddParking(addForm)">
+            <div class="form-group">
+              <label for="userName">User Name</label>
+              <input type="text" ngModel name="userName" class="form-control" id="userName" placeholder="User Name" required>
+            </div>
+            <div class="form-group">
+              <label for="vehicleNumber">Vehicle Number</label>
+              <input type="text" ngModel name="vehicleNumber" class="form-control" id="vehicleNumber" placeholder="Vehicle Number" required>
+            </div>
+            <div class="form-group">
+              <label for="parkingStartTime">Parking Start Time</label>
+              <input type="time" ngModel name="parkingStartTime" class="form-control" id="parkingStartTime" placeholder="Parking Start Time" required>
+            </div>
+            <div class="form-group">
+              <label for="parkingEndTime">Parking End Time</label>
+              <input type="time" ngModel name="parkingEndTime" class="form-control" id="parkingEndTime" placeholder="Parking End Time" required>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" id="add-parking-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="updateParkingModal" tabindex="-1" role="dialog" aria-labelledby="parkingEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="updateParkingModalLabel">Edit Parking of {{editParking?.userName}}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm">
+            <div class="form-group">
+              <label for="userName">User Name</label>
+              <input type="text" ngModel="{{editParking?.userName}}" name="userName" class="form-control" id="editUserName" aria-describedby="emailHelp" placeholder="User Name">
+            </div>
+            <input type="hidden" ngModel="{{editParking?.id}}" name="id" class="form-control" id="id" placeholder="Id">
+            <div class="form-group">
+              <label for="vehicleNumber">Vehicle Number</label>
+              <input type="text" ngModel="{{editParking?.vehicleNumber}}" name="vehicleNumber" class="form-control" id="editVehicleNumber" placeholder="Vehicle Number">
+            </div>
+            <div class="form-group">
+              <label for="parkingStartTime">Parking Start Time</label>
+              <input type="time" ngModel="{{editParking?.parkingStartTime}}" name="parkingStartTime" class="form-control" id="editParkingStartTime" placeholder="Parking Start Time">
+            </div>
+            <div class="form-group">
+              <label for="parkingEndTime">Parking End Time</label>
+              <input type="time" ngModel="{{editParking?.parkingEndTime}}" name="parkingEndTime" class="form-control" id="editParkingEndTime"  placeholder="Parking End Time">
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+              <button (click)="onUpdateParking(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteParkingModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModelLabel">Delete Parking</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete parking of {{deleteParking?.userName}}?</p>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button (click)="onDeleteParking(deleteParkingId)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification for no users -->
+<div *ngIf="allParking?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO PARKING!</h4>
+    <p>No parking were found.</p>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+

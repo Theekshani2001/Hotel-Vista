@@ -1,0 +1,194 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Room Service Manager</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <button (click)="onOpenModal(null, 'add')">Add Room Service Order <span class="sr-only">(current)</span></button>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchOrder(key.value)" #key="ngModel" ngModel
+             name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search orders..." required>
+    </form>
+  </div>
+</nav>
+
+
+<div class="container" id="main-container">
+  <div class="row">
+    <div *ngFor="let order of orders" class="col-md-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body row">
+          <div class="col-6">
+            <a href=""><img src="./assets/images/roomService.jpg" alt="" class="img-fluid rounded-circle w-60"></a>
+          </div>
+          <div class="col-6 card-title align-self-center mb-0">
+            <h5>{{order?.userName}}</h5>
+            <p class="m-0">Room Number : {{order?.roomNumber}}</p>
+          </div>
+        </div>
+        <ul style="background-color: #707070" class="list-group list-group-flush">
+          <li class="list-group-item"><i class="fa fa-calendar float-right"></i>Order Date : {{order?.orderDate}}</li>
+          <li class="list-group-item"><i class="fa fa-clock-o float-right"></i>Order Time : {{order?.orderTime}}</li>
+          <li class="list-group-item"><i class="fa fa-sort-numeric-desc float-right"></i>Items Ordered : {{order?.itemsOrdered}}</li>
+          <li class="list-group-item"><i class="fa fa-tags float-right"></i>Order Status : {{order?.orderStatus}}</li>
+          <li class="list-group-item"><i class="fa fa-money float-right"></i>Total Cost: {{order?.totalCost}}</li>
+        </ul>
+        <div class="card-body">
+          <div class="float-right btn-group btn-group-sm">
+            <a (click)="onOpenModalEdit(order, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+            <a (click)="onOpenModalEdit(order, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Order Modal -->
+<div class="modal fade" id="addRoomServiceOrderModal" tabindex="-1" role="dialog" aria-labelledby="addRoomServiceOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addRoomServiceOrderModalLabel">Add Order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm" (ngSubmit)="onAddOrder(addForm)">
+          <div class="form-group">
+            <label for="userName">User Name</label>
+            <input type="text" ngModel name="userName" class="form-control" id="userName" placeholder="User Name" required>
+          </div>
+          <div class="form-group">
+            <label for="roomNumber">Room Number</label>
+            <input type="number" ngModel name="roomNumber" class="form-control" id="roomNumber" placeholder="Room Number" required>
+          </div>
+          <div class="form-group">
+            <label for="orderDate">Order Date</label>
+            <input type="date" ngModel name="orderDate" class="form-control" id="orderDate" required>
+          </div>
+          <div class="form-group">
+            <label for="orderTime">Order Time</label>
+            <input type="time" ngModel name="orderTime" class="form-control" id="orderTime" required>
+          </div>
+          <div class="form-group">
+            <label for="itemsOrdered">Items Ordered</label>
+            <textarea ngModel name="itemsOrdered" class="form-control" id="itemsOrdered" placeholder="Items Ordered (format: item1, quantity1; item2, quantity2)"  required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="orderStatus">Order Status</label>
+            <select ngModel name="orderStatus" class="form-control" id="orderStatus" required>
+              <option value="Pending">Pending</option>
+              <option value="InProgress">InProgress</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="totalCost">Total Cost</label>
+            <input type="number" ngModel name="totalCost" class="form-control" id="totalCost" placeholder="Total Cost"  required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="add-order-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="updateRoomServiceOrderModal" tabindex="-1" role="dialog" aria-labelledby="roomServiceOrderEditModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="updateRoomServiceOrderModalLabel">Edit Room Service Order of {{editOrder?.userName}}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm">
+          <div class="form-group">
+            <label for="userName">User Name</label>
+            <input type="text" ngModel="{{editOrder?.userName}}" name="userName" class="form-control" id="editUserName" aria-describedby="emailHelp" placeholder="User Name">
+          </div>
+          <input type="hidden" ngModel="{{editOrder?.id}}" name="id" class="form-control" id="id" placeholder="Id">
+
+          <div class="form-group">
+            <label for="roomNumber">Room Number</label>
+            <input type="number" ngModel="{{editOrder?.roomNumber}}" name="roomNumber" class="form-control" id="_roomNumber" placeholder="Room Number" required>
+          </div>
+          <div class="form-group">
+            <label for="orderDate">Order Date</label>
+            <input type="date" ngModel="{{editOrder?.orderDate}}" name="orderDate" class="form-control" id="_orderDate" required>
+          </div>
+          <div class="form-group">
+            <label for="orderTime">Order Time</label>
+            <input type="time" ngModel="{{editOrder?.orderTime}}" name="orderTime" class="form-control" id="_orderTime" required>
+          </div>
+          <div class="form-group">
+            <label for="itemsOrdered">Items Ordered</label>
+            <textarea ngModel="{{editOrder?.itemsOrdered}}" name="itemsOrdered" class="form-control" id="_itemsOrdered" placeholder="Items Ordered (format: item1, quantity1; item2, quantity2)"  required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="orderStatus">Order Status</label>
+            <select ngModel="{{editOrder?.orderStatus}}" name="orderStatus" class="form-control" id="_orderStatus" required>
+              <option value="Pending">Pending</option>
+              <option value="InProgress">InProgress</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="totalCost">Total Cost</label>
+            <input type="number" ngModel="{{editOrder?.totalCost}}" name="totalCost" class="form-control" id="_totalCost" placeholder="Total Cost" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+            <button (click)="onUpdateOrder(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteRoomServiceOrderModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Reservation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete room service order of {{deleteOrder?.userName}}?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeleteOrder(deleteOrderId)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Notification for no users -->
+<div *ngIf="orders?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO ROOM SERVICE ORDERS!</h4>
+    <p>No room service orders were found.</p>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+
